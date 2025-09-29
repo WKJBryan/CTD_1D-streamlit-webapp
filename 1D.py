@@ -158,8 +158,6 @@ else:
     st.info("Add at least one item to compute totals.")
 
 
----
-
 ## Run Commands (local)
 
 ```bash
@@ -168,3 +166,4 @@ streamlit run app.py
 # or
 python -m streamlit run app.py
 ```
+
