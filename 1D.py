@@ -160,10 +160,9 @@ else:
 
 ## Run Commands (local)
 
-```bash
-pip install streamlit
-streamlit run app.py
+# pip install streamlit
+# streamlit run app.py
 # or
-python -m streamlit run app.py
-```
+# python -m streamlit run app.py
+
 
