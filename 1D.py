@@ -50,8 +50,8 @@ def final_amount(subtotal_after_promo, svc_on, svc_rate, tax_on, tax_rate):
 # Streamlit UI
 # ------------------------------
 
-st.set_page_config(page_title="Final Price Calculator — CTD 1D", page_icon="💸")
-st.title("💸 Final Price Calculator (CTD 1D, No Extra Imports)")
+st.set_page_config(page_title="Price Calculator", page_icon="💸")
+st.title("💸 Final Calculator")
 
 # Keep cart in session_state as a list of dicts
 if "cart" not in st.session_state:
@@ -164,5 +164,6 @@ else:
 # streamlit run app.py
 # or
 # python -m streamlit run app.py
+
 
 
