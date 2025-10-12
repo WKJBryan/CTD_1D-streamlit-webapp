@@ -3,7 +3,7 @@ import streamlit as st
 
 promo_code = ""
 if enh_promo:
-promo_code = st.text_input("Promo code (optional)", placeholder="e.g., WELCOME5")
+  promo_code = st.text_input("Promo code (optional)", placeholder="e.g., WELCOME5")
 
 
 # --- Compute and display ---
@@ -38,12 +38,12 @@ st.write(results)
 
 
 if enh_info:
-st.markdown("### Itemized Receipt (enhancement)")
+  st.markdown("### Itemized Receipt (enhancement)")
 receipt_rows = []
 for it in items:
-eff_unit, markup = dynamic_unit_price(
-it["unit_price"], it["popularity"], it["stock"], it["expires_today"]
-)
+  eff_unit, markup = dynamic_unit_price(
+  it["unit_price"], it["popularity"], it["stock"], it["expires_today"]
+  )
 receipt_rows.append({
 "Item": it["name"],
 "Qty": it["quantity"],
@@ -56,4 +56,5 @@ receipt_rows.append({
 st.write(receipt_rows)
 else:
 st.info("Add at least one item to compute total")
+
 
