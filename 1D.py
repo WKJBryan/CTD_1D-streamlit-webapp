@@ -55,6 +55,7 @@ receipt_rows.append({
 })
 st.write(receipt_rows)
 else:
-st.info("Add at least one item to compute total")
+  st.info("Add at least one item to compute total")
+
 
 
