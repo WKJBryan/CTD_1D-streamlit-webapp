@@ -9,13 +9,13 @@ promo_code = st.text_input("Promo code (optional)", placeholder="e.g., WELCOME5"
 # --- Compute and display ---
 items = st.session_state.cart
 if items:
-subtotal = compute_subtotal(items)
+  subtotal = compute_subtotal(items)
 
 
 promo_amt = 0.0
 promo_rate = 0.0
 if enh_promo:
-promo_amt, promo_rate = apply_order_level_discount(subtotal, promo_code)
+  promo_amt, promo_rate = apply_order_level_discount(subtotal, promo_code)
 
 
 subtotal_after_promo = subtotal - promo_amt
@@ -56,3 +56,4 @@ receipt_rows.append({
 st.write(receipt_rows)
 else:
 st.info("Add at least one item to compute total")
+
