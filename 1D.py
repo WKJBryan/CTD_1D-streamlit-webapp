@@ -1,15 +1,4 @@
 # CTD 1D — Streamlit App (Customer & Cashier • Inventory‑Based Dynamic Pricing)
-
-**What this does (brief‑aligned, no extra imports):**
-
-* Two UIs in one app: **Customer** (shop & checkout) and **Cashier** (stock dashboard).
-* **Inventory‑based dynamic pricing** only (no popularity sliders): as an item’s remaining stock falls **relative to the others**, its price auto‑increases within **+5% → +20%** **(piecewise tiers)**.
-* **Perishables rule** maintained if you re‑add later; **not included** here since your umbrella SKUs aren’t perishable. Ask to enable and I’ll add the field back.
-* **Service charge 10%** and **GST 9%** are **compulsory** (no toggles) and applied at checkout.
-* Only `import streamlit as st`. Everything else is plain Python lists/dicts.
-
----
-
 ## How the piecewise dynamic pricing works (hidden from customer)
 
 Let each item i have **remaining ratio** `r_i = stock_now_i / stock_initial_i`. Compute the mean of remaining ratios across all items: `r̄`. Define the item’s **scarcity delta** `Δ = r̄ − r_i`. Larger positive `Δ` ⇒ this item is relatively more depleted.
@@ -280,3 +269,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
