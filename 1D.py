@@ -113,7 +113,7 @@ def draw_cashier_ui():
 
 def draw_customer_ui():
     """Displays the shopping interface for the customer."""
-    st.header("🛍️ Welcome to the Filament Store!")
+    st.header("🛍️ Welcome to Uni-Print!")
 
     inventory = st.session_state.inventory
     cart = st.session_state.cart
@@ -194,3 +194,4 @@ if app_mode == "Customer":
     draw_customer_ui()
 else:
     draw_cashier_ui()
+
