@@ -1,4 +1,5 @@
 import streamlit as st
+import datetime
 
 # --- INITIAL SETUP & DATA ---
 # Using session state to hold data, so it persists across user interactions.
@@ -27,7 +28,6 @@ def get_dynamic_price(item_name):
     # 1. Calculate the 'remaining stock ratio' for each item.
     ratios = []
     for item_data in inventory.values():
-        # Avoid division by zero if initial stock is 0 for some reason.
         if item_data["initial_stock"] > 0:
             ratio = item_data["current_stock"] / item_data["initial_stock"]
             ratios.append(ratio)
@@ -39,11 +39,11 @@ def get_dynamic_price(item_name):
     item_data = inventory[item_name]
     item_ratio = item_data["current_stock"] / item_data["initial_stock"] if item_data["initial_stock"] > 0 else 0
     
-    # 4. Calculate the scarcity delta: a positive value means the item is scarcer than average.
+    # 4. Calculate the scarcity delta.
     scarcity_delta = avg_ratio - item_ratio
     
-    # 5. Apply markup based on the piecewise tiers. This uses if/elif/else logic.
-    markup = 0.05  # Default 5% markup
+    # 5. Apply markup based on the piecewise tiers.
+    markup = 0.05
     if scarcity_delta > 0.30:
         markup = 0.20
     elif scarcity_delta > 0.20:
@@ -56,6 +56,34 @@ def get_dynamic_price(item_name):
     final_price = item_data["base_price"] * (1 + markup)
     return final_price, markup
 
+# --- RECEIPT GENERATION ---
+def generate_receipt_markdown(cart):
+    """Generates a markdown formatted string for the receipt."""
+    now = datetime.datetime.now()
+    receipt_md = f"# Purchase Receipt\n\n**Date:** {now.strftime('%Y-%m-%d %H:%M:%S')}\n\n---\n\n"
+    receipt_md += "| Item | Qty | Unit Price | Total |\n"
+    receipt_md += "|:-----|:---:|-----------:|------:|\n"
+    
+    subtotal = 0.0
+    for item_name, quantity in cart.items():
+        price, _ = get_dynamic_price(item_name)
+        item_total = price * quantity
+        subtotal += item_total
+        receipt_md += f"| {item_name} | {quantity} | ${price:.2f} | ${item_total:.2f} |\n"
+        
+    service_charge = subtotal * 0.10
+    gst = (subtotal + service_charge) * 0.09
+    total_price = subtotal + service_charge + gst
+    
+    receipt_md += "\n---\n\n"
+    receipt_md += f"**Subtotal:** `${subtotal:.2f}`\n\n"
+    receipt_md += f"**Service Charge (10%):** `${service_charge:.2f}`\n\n"
+    receipt_md += f"**GST (9%):** `${gst:.2f}`\n\n"
+    receipt_md += f"### **Total Payable:** `${total_price:.2f}`\n\n"
+    receipt_md += "--- \n\n*Thank you for your purchase!*"
+    
+    return receipt_md
+
 # --- UI RENDERING FUNCTIONS ---
 def draw_cashier_ui():
     """Displays the inventory management dashboard for the cashier."""
@@ -64,7 +92,6 @@ def draw_cashier_ui():
     
     inventory = st.session_state.inventory
     
-    # Prepare data for display
     display_data = []
     for name, data in inventory.items():
         price, markup = get_dynamic_price(name)
@@ -92,29 +119,23 @@ def draw_customer_ui():
     inventory = st.session_state.inventory
     cart = st.session_state.cart
     
-    # --- Product Selection ---
     st.subheader("Our Products")
     for item_name, item_data in inventory.items():
         if item_data["current_stock"] > 0:
             col1, col2 = st.columns([3, 2])
-            
             with col1:
                 dynamic_price, _ = get_dynamic_price(item_name)
                 st.markdown(f"**{item_name}**")
                 st.caption(f"Price: `${dynamic_price:.2f}` | Stock: `{item_data['current_stock']}` available")
-            
             with col2:
-                # Use a unique key for each number_input
                 quantity = st.number_input("Quantity", min_value=0, max_value=item_data["current_stock"], value=0, key=f"qty_{item_name}")
                 if st.button("Add to Cart", key=f"add_{item_name}"):
                     if quantity > 0:
                         cart[item_name] = cart.get(item_name, 0) + quantity
-                        # Update stock (simple implementation)
                         st.session_state.inventory[item_name]['current_stock'] -= quantity
                         st.success(f"Added {quantity} x {item_name} to your cart.")
                         st.rerun()
 
-    # --- Cart and Checkout ---
     st.divider()
     st.subheader("🛒 Your Shopping Cart")
     
@@ -122,17 +143,14 @@ def draw_customer_ui():
         st.info("Your cart is empty.")
     else:
         subtotal = 0.0
-        
-        # Display an itemized list, an optional enhancement mentioned in the brief.
         for item_name, quantity in cart.items():
-            price, _ = get_dynamic_price(item_name) # Price is recalculated in case it changed
+            price, _ = get_dynamic_price(item_name)
             item_total = price * quantity
             subtotal += item_total
             st.write(f"- {item_name}: {quantity} x ${price:.2f} = **${item_total:.2f}**")
         
         st.divider()
         
-        # Calculate final price with compulsory surcharges.
         service_charge = subtotal * 0.10
         gst = (subtotal + service_charge) * 0.09
         total_price = subtotal + service_charge + gst
@@ -145,22 +163,30 @@ def draw_customer_ui():
         | GST (9%) | ${gst:.2f} |
         | ### **Total Price** | ### **${total_price:.2f}** |
         """)
-        
-        if st.button("Clear Cart"):
-            # This simple implementation doesn't return items to stock.
-            st.session_state.cart.clear()
-            st.warning("Cart cleared.")
-            st.rerun()
 
+        # --- ACTION BUTTONS ---
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Clear Cart", use_container_width=True):
+                st.session_state.cart.clear()
+                st.warning("Cart cleared.")
+                st.rerun()
+        with col2:
+            receipt_content = generate_receipt_markdown(cart)
+            st.download_button(
+                label="📄 Download Receipt",
+                data=receipt_content,
+                file_name=f"receipt_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
+                mime="text/markdown",
+                use_container_width=True
+            )
 
 # --- MAIN APP LOGIC ---
 st.set_page_config(layout="centered")
 st.title("Dynamic Pricing Point-of-Sale System")
 
-# Initialize state on first run.
 initialize_session_state()
 
-# Use a sidebar radio to switch between the two UIs.
 with st.sidebar:
     st.header("Select View")
     app_mode = st.radio("Choose UI:", ("Customer", "Cashier"), label_visibility="collapsed")
