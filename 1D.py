@@ -1,5 +1,4 @@
 import streamlit as st
-import datetime
 
 # --- INITIAL SETUP & DATA ---
 # Using session state to hold data, so it persists across user interactions.
@@ -59,8 +58,8 @@ def get_dynamic_price(item_name):
 # --- RECEIPT GENERATION ---
 def generate_receipt_markdown(cart):
     """Generates a markdown formatted string for the receipt."""
-    now = datetime.datetime.now()
-    receipt_md = f"# Purchase Receipt\n\n**Date:** {now.strftime('%Y-%m-%d %H:%M:%S')}\n\n---\n\n"
+    # Removed datetime import, so no timestamp is included.
+    receipt_md = f"# Purchase Receipt\n\n---\n\n"
     receipt_md += "| Item | Qty | Unit Price | Total |\n"
     receipt_md += "|:-----|:---:|-----------:|------:|\n"
     
@@ -114,7 +113,7 @@ def draw_cashier_ui():
 
 def draw_customer_ui():
     """Displays the shopping interface for the customer."""
-    st.header("🛍️ Welcome to the Filament Store!") # Changed header
+    st.header("🛍️ Welcome to the Filament Store!")
 
     inventory = st.session_state.inventory
     cart = st.session_state.cart
@@ -176,14 +175,14 @@ def draw_customer_ui():
             st.download_button(
                 label="📄 Download Receipt",
                 data=receipt_content,
-                file_name=f"receipt_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
+                file_name="receipt.md", # Changed to a static filename
                 mime="text/markdown",
                 use_container_width=True
             )
 
 # --- MAIN APP LOGIC ---
 st.set_page_config(layout="centered")
-st.title("Filament Store Point-of-Sale System") # Changed title
+st.title("Filament Store Point-of-Sale System")
 
 initialize_session_state()
 
