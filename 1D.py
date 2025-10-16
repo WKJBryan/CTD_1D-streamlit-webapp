@@ -6,12 +6,12 @@ import datetime
 def initialize_session_state():
     """Sets up the initial state for the inventory and cart if not already present."""
     if 'inventory' not in st.session_state:
-        # Data is stored in one place for easy updates, as per the brief's advice.
+        # The inventory is now stocked with 1kg filament rolls.
         st.session_state.inventory = {
-            "Classic Black Umbrella": {"base_price": 25.00, "initial_stock": 100, "current_stock": 80},
-            "Compact Travel Umbrella": {"base_price": 20.00, "initial_stock": 150, "current_stock": 95},
-            "Golf Pro Umbrella": {"base_price": 40.00, "initial_stock": 75, "current_stock": 70},
-            "Bubble Dome Umbrella": {"base_price": 30.00, "initial_stock": 90, "current_stock": 50},
+            "PLA Filament (Black, 1kg)": {"base_price": 22.00, "initial_stock": 200, "current_stock": 150},
+            "PLA Filament (White, 1kg)": {"base_price": 22.00, "initial_stock": 200, "current_stock": 180},
+            "PETG Filament (Blue, 1kg)": {"base_price": 28.00, "initial_stock": 120, "current_stock": 70},
+            "ABS Filament (Red, 1kg)": {"base_price": 25.00, "initial_stock": 100, "current_stock": 95},
         }
     if 'cart' not in st.session_state:
         st.session_state.cart = {}
@@ -114,7 +114,7 @@ def draw_cashier_ui():
 
 def draw_customer_ui():
     """Displays the shopping interface for the customer."""
-    st.header("🛍️ Welcome to the Umbrella Store!")
+    st.header("🛍️ Welcome to the Filament Store!") # Changed header
 
     inventory = st.session_state.inventory
     cart = st.session_state.cart
@@ -183,7 +183,7 @@ def draw_customer_ui():
 
 # --- MAIN APP LOGIC ---
 st.set_page_config(layout="centered")
-st.title("Dynamic Pricing Point-of-Sale System")
+st.title("Filament Store Point-of-Sale System") # Changed title
 
 initialize_session_state()
 
