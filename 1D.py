@@ -166,9 +166,9 @@ def draw_customer_ui():
         # --- ACTION BUTTONS ---
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("Clear Cart", use_container_width=True):
+            if st.button("Check-out", use_container_width=True):
                 st.session_state.cart.clear()
-                st.warning("Cart cleared.")
+                st.warning("Checked Out.")
                 st.rerun()
         with col2:
             receipt_content = generate_receipt_markdown(cart)
@@ -194,4 +194,5 @@ if app_mode == "Customer":
     draw_customer_ui()
 else:
     draw_cashier_ui()
+
 
