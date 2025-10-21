@@ -7,10 +7,11 @@ def initialize_session_state():
     if 'inventory' not in st.session_state:
         # The inventory is now stocked with 1kg filament rolls.
         st.session_state.inventory = {
-            "PLA Filament (Black, 1kg)": {"base_price": 22.00, "initial_stock": 200, "current_stock": 150},
-            "PLA Filament (White, 1kg)": {"base_price": 22.00, "initial_stock": 200, "current_stock": 180},
-            "PETG Filament (Blue, 1kg)": {"base_price": 28.00, "initial_stock": 120, "current_stock": 70},
+            "PLA Filament (Black, 1kg)": {"base_price": 20.00, "initial_stock": 200, "current_stock": 150},
+            "PLA Filament (White, 1kg)": {"base_price": 20.00, "initial_stock": 200, "current_stock": 180},
+            "PETG Filament (Blue, 1kg)": {"base_price": 30.00, "initial_stock": 120, "current_stock": 70},
             "ABS Filament (Red, 1kg)": {"base_price": 25.00, "initial_stock": 100, "current_stock": 95},
+            "ABS Filament (Rainbow, 1kg)": {"base_price": 27.00, "initial_stock": 80, "current_stock": 80},
         }
     if 'cart' not in st.session_state:
         st.session_state.cart = {}
@@ -194,5 +195,3 @@ if app_mode == "Customer":
     draw_customer_ui()
 else:
     draw_cashier_ui()
-
-
